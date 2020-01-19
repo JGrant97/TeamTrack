@@ -44,6 +44,7 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
     private DatabaseReference mRef;
     private String userID;
     TeamJoin teamJoin;
+    private int n;
 
 
     @Override
@@ -64,48 +65,39 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
         userID = user.getUid();
         teamJoin = new TeamJoin();
 
-        //checks if user is in a team and if so stops them from registering a new one
-        Query query2 = mRef.orderByChild("TeamMembers").equalTo(userID);
-        query2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                buttonRegister.setEnabled(false);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        //checks if user is in a team and if so stops them from registering a new one
+//        Query query2 = mRef.orderByChild("TeamMembers").equalTo(userID);
+//        query2.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                buttonRegister.setEnabled(false);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
 
     }
 
     public void TeamCode() {
 
+        //Code length
+        int n = 6;
 
-        //generates team code
-        Random code = new Random();
-        int number1 = code.nextInt(10);
-        int number2 = code.nextInt(10);
-        int number3 = code.nextInt(10);
-        int number4 = code.nextInt(10);
-        int number5 = code.nextInt(10);
-        int number6 = code.nextInt(10);
-        String myString = String.valueOf(number1);
-        String myString2 = String.valueOf(number2);
-        String myString3 = String.valueOf(number3);
-        String myString4 = String.valueOf(number4);
-        String myString5 = String.valueOf(number5);
-        String myString6 = String.valueOf(number6);
+        //Generate team join code
+        String AlphaNumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "0123456789" + "abcdefghijklmnopqrstuvwxyz";
+        StringBuilder stringbuilder = new StringBuilder(n);
 
-        String finalCode = myString
-                + myString2
-                + myString3
-                + myString4
-                + myString5
-                + myString6;
+        for (int i = 0; i < n; i++) {
+            int index = (int) (AlphaNumeric.length() * Math.random());
 
+            stringbuilder.append(AlphaNumeric.charAt(index));
+        }
+
+        String finalCode = stringbuilder.toString();
         textCode.setText(finalCode);
 
         String TeamCode = textCode.getText().toString();
