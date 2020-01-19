@@ -53,9 +53,9 @@ import java.util.Objects;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, View.OnClickListener {
 
     private GoogleMap mMap;
-    private Button buttonmyprofile,buttonCreateTeam,buttonJoinTeam;
+    private Button buttonmyprofile, buttonCreateTeam, buttonJoinTeam;
     private String userID;
-    private DatabaseReference mRef,mRef2;
+    private DatabaseReference mRef, mRef2;
     private FirebaseAuth mAuth;
 
     private Marker mTeamMarker;
@@ -88,7 +88,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonJoinTeam.setOnClickListener(this);
 
 
-
     }
 
     @Override
@@ -105,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    protected synchronized void buildGoogleApiClient(){
+    protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -129,6 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         TeamLocation();
 
     }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         mLocationRequest = new LocationRequest();
@@ -143,8 +143,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
     }
-
-
 
 
     public void TeamLocation() {
@@ -191,52 +189,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                                     @Override
                                                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                                         //checks if the user location exists. if so gets both Lat and Long which then is used to display a marker for each team member
-                                                                        if (dataSnapshot.exists()){
+                                                                        if (dataSnapshot.exists()) {
                                                                             List<Object> map = (List<Object>) dataSnapshot.getValue();
 
-                                                                            double TeamLat= 0;
+                                                                            double TeamLat = 0;
                                                                             double TeamLong = 0;
-                                                                            if (map.get(0) != null){
+                                                                            if (map.get(0) != null) {
                                                                                 TeamLat = Double.parseDouble(map.get(0).toString());
                                                                             }
-                                                                            if (map.get(1) != null){
+                                                                            if (map.get(1) != null) {
                                                                                 TeamLong = Double.parseDouble(map.get(1).toString());
                                                                             }
 
                                                                             int Limit = TeamAmount;
-                                                                            LatLng TeamLoc1 = new LatLng(TeamLat,TeamLong);
-                                                                            LatLng TeamLoc2 = new LatLng(TeamLat,TeamLong);
+                                                                            LatLng TeamLoc1 = new LatLng(TeamLat, TeamLong);
+                                                                            LatLng TeamLoc2 = new LatLng(TeamLat, TeamLong);
 
-                                                                             Map<String, Marker> mMarkerMap = new HashMap<>();
-                                                                             Marker previousMarker = mMarkerMap.get(TeamMemberIDs);
+                                                                            Map<String, Marker> mMarkerMap = new HashMap<>();
+                                                                            Marker previousMarker = mMarkerMap.get(TeamMemberIDs);
 
-                                                                                if (previousMarker != null) {
-                                                                                    //previous marker exists, update position:
-                                                                                    previousMarker.setPosition(TeamLoc1);
-                                                                                } else {
-                                                                                    //No previous marker, create a new one:
-                                                                                    MarkerOptions markerOptions = new MarkerOptions()
-                                                                                            .position(TeamLoc1)
-                                                                                            .title(TeamMemberIDs)
-                                                                                            .snippet(TeamMemberName);
+                                                                            if (previousMarker != null) {
+                                                                                //previous marker exists, update position:
+                                                                                previousMarker.setPosition(TeamLoc1);
+                                                                            } else {
+                                                                                //No previous marker, create a new one:
+                                                                                MarkerOptions markerOptions = new MarkerOptions()
+                                                                                        .position(TeamLoc1)
+                                                                                        .title(TeamMemberIDs)
+                                                                                        .snippet(TeamMemberName);
 
-                                                                                    Marker marker = mMap.addMarker(markerOptions);
+                                                                                Marker marker = mMap.addMarker(markerOptions);
 
-                                                                                    //put this new marker in the HashMap:
-                                                                                    mMarkerMap.put(TeamMemberIDs, marker);
-                                                                                }
-
-
-                                                                         //   if (mTeamMarker != null )
-                                                                          //  {
-                                                                           //     mMap.clear();
-                                                                           // }
-
-                                                                          //  mTeamMarker = mMap.addMarker(new MarkerOptions()
-                                                                          //          .position(TeamLoc1)
-                                                                          //          .title("Team Member")
-                                                                          //          .snippet(TeamMemberName));
-
+                                                                                //put this new marker in the HashMap:
+                                                                                mMarkerMap.put(TeamMemberIDs, marker);
+                                                                            }
                                                                         }
                                                                     }
 
@@ -258,6 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                                         }
                                     }
+
                                     @Override
                                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -273,6 +260,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
@@ -314,8 +302,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case LOCATION_REQUEST_CODE:{
+        switch (requestCode) {
+            case LOCATION_REQUEST_CODE: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                 }
@@ -324,16 +312,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-  
+
     @Override
     protected void onStop() {
         super.onStop();
 
         //removes user location when not active
-       // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this); String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-       // DatabaseReference ref = FirebaseDatabase.getInstance().getReference("userLocation");
+        // LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this); String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // DatabaseReference ref = FirebaseDatabase.getInstance().getReference("userLocation");
         //GeoFire geoFire = new GeoFire(ref);
-       // geoFire.removeLocation(userId);
+        // geoFire.removeLocation(userId);
 
     }
 
