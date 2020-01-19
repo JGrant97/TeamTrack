@@ -22,6 +22,8 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +36,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceIdReceiver;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 public class CreateTeam extends AppCompatActivity implements View.OnClickListener {
@@ -41,7 +47,7 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
     private Button buttonMap;
     private TextView textCode;
     private FirebaseAuth mAuth;
-    private DatabaseReference mRef;
+    private DatabaseReference mRef, mRef2;
     private String userID;
     TeamJoin teamJoin;
     private int n;
@@ -59,27 +65,77 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
         buttonRegister.setOnClickListener(this);
 
         mRef = FirebaseDatabase.getInstance().getReference("Teams");
+        mRef2 = FirebaseDatabase.getInstance().getReference("User");
         mAuth = FirebaseAuth.getInstance();
 
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         teamJoin = new TeamJoin();
 
-//        //checks if user is in a team and if so stops them from registering a new one
-//        Query query2 = mRef.orderByChild("TeamMembers").equalTo(userID);
-//        query2.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                buttonRegister.setEnabled(false);
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
 
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (final DataSnapshot ds : dataSnapshot.getChildren()) {
+                        final String id = ds.getKey();
 
+                        //check if Team Member ID in DB is equal to current user ID
+                        final Query query = mRef.orderByChild("teamMemberID").equalTo(userID);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                //checks if the teamID is equal
+                                Query query1 = mRef.orderByChild("teamID").equalTo(id);
+                                query1.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull final DataSnapshot dataSnapshotTest) {
+
+                                        if (dataSnapshotTest.child(String.valueOf(id)).child("TeamMembers").child(String.valueOf(userID)).exists()) {
+                                            mRef2.addValueEventListener(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                    for (DataSnapshot ds2 : dataSnapshot.getChildren()) {
+                                                        //gets all the userID's of users in the team
+                                                        final String TeamMemberIDs = ds2.getKey();
+
+                                                        //if user is in team set register team button as disabled and display to team join code
+                                                        buttonRegister.setEnabled(false);
+                                                        String code = ds.child("teamCode").getValue().toString();
+                                                        textCode.setText(code);
+
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
     }
 
     public void TeamCode() {
@@ -159,6 +215,7 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
     public void onClick(View view) {
         if (view == buttonRegister) {
             TeamCode();
+            buttonRegister.setEnabled(false);
         }
 
         if (view == buttonMap) {

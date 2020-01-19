@@ -56,7 +56,6 @@ public class Profile extends AppCompatActivity implements View.OnClickListener {
         myRef = FirebaseDatabase.getInstance().getReference("User");
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
-        
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override

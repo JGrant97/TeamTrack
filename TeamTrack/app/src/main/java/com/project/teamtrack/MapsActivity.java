@@ -154,7 +154,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     for (final DataSnapshot ds : dataSnapshot.getChildren()) {
                         final String id = ds.getKey();
 
-                        //check is Team Member ID in DB is equal to current user ID
+                        //check if Team Member ID in DB is equal to current user ID
                         final Query query = mRef.orderByChild("teamMemberID").equalTo(userID);
                         query.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override

@@ -49,11 +49,18 @@
             android:text="Register Team" />
 
         <Button
+            android:id="@+id/buttonLeave"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:text="Leave Team" />
+
+        <Button
             android:id="@+id/buttonMap"
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            android:text="Map" />
+            android:text="Back" />
 
 
     </LinearLayout>
