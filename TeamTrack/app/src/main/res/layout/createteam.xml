@@ -37,7 +37,7 @@
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             android:textAlignment="center"
-            android:text="Click register team to generate a code"
+            android:text="Click register team to generate team code"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="16sp" />
 
