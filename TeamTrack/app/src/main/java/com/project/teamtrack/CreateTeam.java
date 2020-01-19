@@ -45,6 +45,7 @@ import java.util.Random;
 public class CreateTeam extends AppCompatActivity implements View.OnClickListener {
     private Button buttonRegister;
     private Button buttonMap;
+    private Button buttonLeave;
     private TextView textCode;
     private FirebaseAuth mAuth;
     private DatabaseReference mRef, mRef2;
@@ -61,8 +62,10 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
         textCode = (TextView) findViewById(R.id.textCode);
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
         buttonMap = (Button) findViewById(R.id.buttonMap);
+        buttonLeave = (Button) findViewById(R.id.buttonLeave);
         buttonMap.setOnClickListener(this);
         buttonRegister.setOnClickListener(this);
+        buttonLeave.setOnClickListener(this);
 
         mRef = FirebaseDatabase.getInstance().getReference("Teams");
         mRef2 = FirebaseDatabase.getInstance().getReference("User");
@@ -211,6 +214,64 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
 
     }
 
+    public void leave() {
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (final DataSnapshot ds : dataSnapshot.getChildren()) {
+                        final String id = ds.getKey();
+
+                        //check if Team Member ID in DB is equal to current user ID
+                        final Query query = mRef.orderByChild("teamMemberID").equalTo(userID);
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                final Task<Void> leave = mRef.child(id).child("TeamMembers").child(userID).removeValue();
+                                buttonRegister.setEnabled(true);
+                                textCode.setText("XXXXXX");
+
+                                leave.addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (leave.isSuccessful()) {
+                                            Toast.makeText(CreateTeam.this, "You have left a team!", Toast.LENGTH_LONG).show();
+
+                                        }
+                                    }
+                                });
+
+                                final Query query = mRef.child(id).child("ownerID").equalTo(userID);
+                                query.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        mRef.child(id).removeValue();
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
     @Override
     public void onClick(View view) {
         if (view == buttonRegister) {
@@ -221,6 +282,10 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
         if (view == buttonMap) {
             finish();
             startActivity(new Intent(this, MapsActivity.class));
+        }
+
+        if (view == buttonLeave) {
+            leave();
         }
     }
 
