@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "203758359584",
+    "firebase_url": "https://teamtrack-76509.firebaseio.com",
+    "project_id": "teamtrack-76509",
+    "storage_bucket": "teamtrack-76509.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203758359584:android:0022cae8a621fd7c",
+        "android_client_info": {
+          "package_name": "com.project.teamtrack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203758359584-sbkbs30338mv8uhou3uod5hercith2re.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2gX54qy4Ef-RI9yAOoDMDx9QZKqtZ4yg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
