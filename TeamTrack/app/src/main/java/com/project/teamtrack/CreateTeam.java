@@ -63,9 +63,25 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
         FirebaseUser user = mAuth.getCurrentUser();
         userID = user.getUid();
         teamJoin = new TeamJoin();
-    }
-    public void TeamCode () {
 
+        //checks if user is in a team and if so stops them from registering a new one
+        Query query2 = mRef.orderByChild("TeamMembers").equalTo(userID);
+        query2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                buttonRegister.setEnabled(false);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    public void TeamCode() {
 
 
         //generates team code
@@ -84,11 +100,11 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
         String myString6 = String.valueOf(number6);
 
         String finalCode = myString
-                +myString2
-                +myString3
-                +myString4
-                +myString5
-                +myString6;
+                + myString2
+                + myString3
+                + myString4
+                + myString5
+                + myString6;
 
         textCode.setText(finalCode);
 
@@ -98,7 +114,7 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
 
             String id = mRef.push().getKey();
 
-            Team team = new Team(id,TeamCode,OwnerID);
+            Team team = new Team(id, TeamCode, OwnerID);
 
             mRef.child(id).setValue(team);
             textCode.setText(TeamCode);
@@ -114,8 +130,7 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists())
-                        for (DataSnapshot ds: dataSnapshot.getChildren())
-                        {
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             teamJoin.setTeamMemberID(userID);
                             teamJoin.setTeamMemberName(name);
 
@@ -125,17 +140,17 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
                             Members.addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful())
-                                    {
-                                        Toast.makeText(CreateTeam.this, "You have joined a team!", Toast.LENGTH_LONG).show();;
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(CreateTeam.this, "You have joined a team!", Toast.LENGTH_LONG).show();
+                                        ;
                                     }
                                 }
                             });
                         }
-                    else
-                    {
+                    else {
                         //tells user that there is no team with this code
-                        Toast.makeText(CreateTeam.this, "No Team with this code!", Toast.LENGTH_LONG).show();;
+                        Toast.makeText(CreateTeam.this, "No Team with this code!", Toast.LENGTH_LONG).show();
+                        ;
                     }
                 }
 
@@ -145,16 +160,16 @@ public class CreateTeam extends AppCompatActivity implements View.OnClickListene
                 }
             });
         }
+
     }
 
     @Override
-    public void onClick(View view){
-        if (view == buttonRegister){
+    public void onClick(View view) {
+        if (view == buttonRegister) {
             TeamCode();
-            buttonRegister.setEnabled(false);
         }
 
-        if (view == buttonMap){
+        if (view == buttonMap) {
             finish();
             startActivity(new Intent(this, MapsActivity.class));
         }
