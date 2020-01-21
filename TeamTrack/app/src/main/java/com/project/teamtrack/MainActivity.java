@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText editTextEmail;
     private EditText editTextPassword;
     private TextView textViewSignin;
+    private TextView editTextCPassword;
 
     private ProgressDialog progressDialog;
 
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         textViewSignin = (TextView) findViewById(R.id.textViewSighin);
         editTextName = (EditText) findViewById(R.id.editTextName);
+        editTextCPassword = (EditText) findViewById(R.id.editTextCPassword);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final String name = editTextName.getText().toString().trim();
         final String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        String cpassword = editTextCPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(name)) {
             //email is empty
@@ -92,6 +95,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //stopping function from executing further
             return;
         }
+
+        if (TextUtils.isEmpty(cpassword)) {
+            //email is empty
+            Toast.makeText(this, "Please confirm passwords", Toast.LENGTH_SHORT).show();
+            //stopping function from executing further
+            return;
+        }
+
+        if (!password.equals(cpassword)) {
+            //email is empty
+            Toast.makeText(this, "Please ensure passwords match", Toast.LENGTH_SHORT).show();
+            //stopping function from executing further
+            return;
+        }
+
         //if validations are ok
         //will show a progress bar
 

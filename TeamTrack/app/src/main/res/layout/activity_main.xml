@@ -49,6 +49,14 @@
             android:hint="Enter your password"
             android:inputType="textPassword" />
 
+        <EditText
+            android:id="@+id/editTextCPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:hint="Confirm your password"
+            android:inputType="textPassword" />
+
         <Button
             android:id="@+id/buttonRegister"
             android:layout_width="wrap_content"
